@@ -4,16 +4,19 @@ _Rather than a long-winded pompous manifesto, here's the initial chat thread bet
 
 ----
 _Tom Gidden_:
+
 I just wrote a bunch of stored procedures and triggers, to try to make some of the inverted index stuff more transparent... not that it's a panacea, but it's a darn sight better than LIKE %foo%.
 
 This week alone, I've had to debug three completely independent projects which have relied on wildcard-leading LIKEs. It amazes me that so-called SQL developers don't realise how wrong it is.
 
 ----
 _Stig Palmquist_:
+
 Wanna create an Open Source project of out it? It might be a viable alternative to {p,c,}lucene, swish, etc.
  
 ----
 _Tom Gidden_:
+
 It is tempting... I was considering writing it up as a blog post. I guess time is the limiting factor!
 
 While it's nowhere near as powerful as a "proper" search library as you say, I think it's still useful for small-scale stuff and when you need to do keyword searches combined with other criteria.
@@ -34,6 +37,7 @@ paddr5 LIKE "%%")
  
 ----
 _Stig Palmquist_:
+
 Yes, double-ended wildcard likes creates all kinds of problems, but is very common due to it being too easy to implement. Unfortunately (of fortunately from a consultants perspective) it's rarely fixed before the queries fall over on themselves under high load and/or the table growing too large.
 
 But, the alternatives (apart from the dodgy FULLTEXT index in MySQL) are usually too "hard" to implement. And people rarely need the flexibility of a proper search engine. So that's why I'm kinda excited about your stored procedures as they would be a part of a self contained solution existing in the database requiring no additional application side hacks. You could also implement incremental indexing etc. using triggers, and the search could (i think) be returned by a stored procedure generating the SQL needed and returning a dataset that can be and joined against other stuff (although I'm uncertain of the last part).
@@ -42,6 +46,7 @@ I was looking at Sphinx Search which has a full MySQL backend integration; meani
 
 ----
 _Tom Gidden_:
+
 The problem with the stored procedure approach is that it's pretty much impossible to genericise the search itself without using iterative temporary tables (bad for optimisation), as you can't build a SELECT query dynamically in an SP. As you say, it is possible to have a stored procedure which returns an SQL string to execute, but that's just plain yicky! :)
 
 However, just having the indexing task trigger-driven does ensure it's kept up-to-date, I suppose.
@@ -60,6 +65,7 @@ Is there already a CPAN module for search query building? Damn well should be...
  
 ----
 _Stig Palmquist_:
+
 I would never suggest returning a generated SQL query thought, but rather generate it inside the procedure, use "PREPARE statement" to prepare it with placeholders and then executing the query with the appropriate values with "EXECUTE statement USING var1, var2, var3". This should work in stored procedures, but not in functions or triggers.
 
 Unfortunately, MySQL does not have an array type, but a temp table could be used as a stack to populate the argument list in some fashion.
@@ -76,6 +82,7 @@ I've been thinking about writing something that generates and updates nested set
 
 ----
 _Tom Gidden_:
+
 Thinking a bit more about the idea of doing it all in SPs..
 
 The SPs themselves would be quite horrific. You'd need one that would take a table and list of columns and would generate all of the CREATE TABLEs for the indexes, the triggers, indexing SPs, search SP generators, and so forth. All that would have to be manually cut-and-pasted back into the MySQL client.
@@ -104,6 +111,7 @@ You've got my brain working now... MAKE IT STOP! ARGH!
  
 ----
 _Tom Gidden_:
+
 Hrm...
 
 I suppose it's probably worth having a project that actually offers all of these techniques:
@@ -120,6 +128,7 @@ Google Code project, then? :)
  
 ----
 _Stig Palmquist_:
+
 Let's get it on!
 
 I'm unsure if it is possible to do create a SP in an SP, code generation is interesting.
@@ -132,6 +141,7 @@ Or "Mii"? :)
 
 ----
 _Tom Gidden_:
+
 Yep... agree with starting with #1.
 
 Even if we progress to an all-singing-all-dancing multi-table version, #1 is still useful as a simpler, tighter alternative.
@@ -144,6 +154,7 @@ Just for delusions of grandeur, let's miss out the "mysql" bit from the name :) 
 
 ----
 _Stig Palmquist_:
+
 The SP could potentially create the trigger by using something like "SET @statement := CONCAT('CREATE TRIGGER ', trigger_name, ' blablablah);" 
 
 And to make it easier to use, we could create some kind of perl script that automatically creates the procs with the correct table/column names too. :)
