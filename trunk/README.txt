@@ -10,14 +10,14 @@
  * MySQL command prompt, do:
  */
 
-\. create_tables.sql
-\. sp_wordID.sql
-\. sp_sanitizeWord.sql
-\. sp_article__indexString.sql
-\. sp_article__basicSearch.sql
-\. sp_article__basicSearchWithWords.sql
-\. triggers.sql
-\. data.sql
+\. tests/create_tables.sql
+\. sql/sp_wordID.sql
+\. sql/sp_sanitizeWord.sql
+\. sql/sp_article__indexString.sql
+\. sql/sp_article__basicSearch.sql
+\. sql/sp_article__basicSearchWithWords.sql
+\. sql/triggers.sql
+\. tests/data.sql
 
 /*
  * then try out the searching procedures:
@@ -31,13 +31,13 @@ CALL article__basicSearch("best of times");
  * or run some of the "manual" SQL queries instead:
  */
 
-\. query1.sql
+\. tests/query1.sql
 
-\. query2.sql
+\. tests/query2.sql
 
-\. query3.sql
+\. tests/query3.sql
 
-\. query4.sql
+\. tests/query4.sql
 
 /*
  * After using the searching procedures, you can see what SQL was used to query them:
