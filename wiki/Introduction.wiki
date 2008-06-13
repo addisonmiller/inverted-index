@@ -1,4 +1,5 @@
 #summary An introduction to the project
+#labels Featured,Phase-Requirements
 
 _Rather than a long-winded pompous manifesto, here's the initial chat thread between Tom and Stig.  It should give you some idea of the aim of the project:_
 
