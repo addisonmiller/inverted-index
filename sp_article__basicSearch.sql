@@ -14,67 +14,56 @@ DELIMITER ;;
 CREATE PROCEDURE `article__basicSearch`(_sentence TEXT)
 thisproc:BEGIN
 
--- The name of the table containing the data, ie. the table being indexed
+--
+-- Data and index source tables.
+--
 DECLARE _dataTable VARCHAR(255) DEFAULT 'article';
-
--- The name of the table containing the index tuples
 DECLARE _indexTable VARCHAR(255) DEFAULT 'article__index';
-
--- The name of the ID column in both the data and index tables
 DECLARE _idColumn VARCHAR(255) DEFAULT 'article_id';
 
-
--- -- For internal use only...
+--
+-- Internal Variables
+--
 
 -- Table alias name to keep track of the join topology.
 DECLARE _firstTable VARCHAR(255) DEFAULT 'a';
 
--- Current word count
+DECLARE _word VARCHAR(255) DEFAULT NULL;
 DECLARE _wordCount INT UNSIGNED DEFAULT '0';
-
--- Found word
-DECLARE _word VARCHAR(255);
-
--- ID for found word
 DECLARE _wordId INT UNSIGNED;
 
--- Character-counting gubbins.
-DECLARE _base INT UNSIGNED DEFAULT '0';
-DECLARE _incr INT UNSIGNED DEFAULT '0';
-DECLARE _len INT UNSIGNED;
-DECLARE _nextChar CHAR(1);
+-- Iterator counter for word loop
+DECLARE _i INT DEFAULT 0;
 
--- Length of input string, for testing end-of-line.
-SET _len = LENGTH(_sentence);
+-- Defining cursor for iterating over parsed input words
+DECLARE _continue_loop_words INT DEFAULT 1;
+DECLARE cursor_words CURSOR FOR SELECT word FROM parseWords_result;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET _continue_loop_words = NULL;
 
--- Skip _incr to start of first word
-REPEAT
-    SET _incr = _incr + 1;
-    SET _nextChar = SUBSTRING(_sentence, _incr, 1);
-UNTIL (_nextChar REGEXP '[a-z0-9]' OR _incr > _len) END REPEAT;
+-- Call proc to parse input words into temp table.
+CALL parseWords(_sentence);
+SELECT count(*) FROM parseWords_result INTO _wordCount;
 
--- Check to see if there IS a first word
-IF (_incr < _len) THEN
 
-    -- Start the query with the data table itself.
-    SET @_sql = CONCAT('SELECT a.* FROM ',_dataTable,' AS ',_firstTable);
 
-    -- Okay.  For each word...
-    REPEAT
-        -- Start where the first word ended
-        SET _base = _incr;
+-- Leave procedure if there are no parsed results.
+IF !(_wordCount > 0) THEN
+   LEAVE thisproc;
+END IF;
 
-        -- Rewind one to allow for the first _incr+=1
-        SET _incr = _base-1;
+-- Start the query with the data table itself.
+SET @_sql = CONCAT('SELECT ',_firstTable,'.* FROM ',_dataTable,' AS ',_firstTable);
 
-        -- Slew through word looking for first non-word character
-        REPEAT
-            SET _incr = _incr + 1;
-            SET _nextChar = SUBSTRING(_sentence, _incr, 1);
-        UNTIL (_nextChar NOT REGEXP '[a-z0-9]' OR _incr > _len) END REPEAT;
 
-        -- Grab this word
-        SET _word = SUBSTRING(_sentence, _base, _incr-_base);
+OPEN cursor_words;
+loop_words: LOOP
+	-- Cursor control (the table contains word positions, but its
+	-- not fetched)
+        FETCH cursor_words INTO _word;
+	IF (_continue_loop_words is NULL) THEN 
+	   LEAVE loop_words; 
+	END IF;
+
 
         -- Get the ID for this word
         SET _wordId = wordID(_word, FALSE);
@@ -90,35 +79,22 @@ IF (_incr < _len) THEN
         -- link to the previous table or the first (original) table.  I'm
         -- assuming it gets optimised out, but I'm not too sure.  Plus,
         -- when it comes to using positions, _prevTable is more natural.
-        SET @_sql = CONCAT(@_sql, ' INNER JOIN ',_indexTable,' AS i',_wordCount,
-                            ' ON ',_firstTable,'.',_idColumn,' = i',_wordCount,'.',_idColumn,
-                            ' AND i',_wordCount,'.word_id = ',_wordId);
+        SET @_sql = CONCAT(@_sql, ' INNER JOIN ',_indexTable,' AS i',_i,
+                            ' ON ',_firstTable,'.',_idColumn,' = i',_i,'.',_idColumn,
+                            ' AND i',_i,'.word_id = ',_wordId);
+	SET _i=_i+1;
+END LOOP loop_words;
 
-        -- Update word count
-        SET _wordCount = _wordCount + 1;
 
-        -- Slew to find start of next word
-        REPEAT
-            SET _incr = _incr + 1;
-            SET _nextChar = SUBSTRING(_sentence, _incr, 1);
-        UNTIL (_nextChar REGEXP '[a-z0-9]' OR _incr > _len) END REPEAT;
+-- Construct query SQL, and execution
+SET @_sql = CONCAT(@_sql, ' GROUP BY a.',_idColumn);
+PREPARE query FROM @_sql;
+EXECUTE query;
 
-    -- Do this until end of sentence
-    UNTIL _incr>=_len END REPEAT;
+-- Clear up
+CLOSE cursor_words;
+DROP PREPARE query;
 
-    -- Construct query SQL
-    SET @_sql = CONCAT(@_sql, ' GROUP BY a.',_idColumn);
-
-    -- Prepare statement
-    PREPARE query FROM @_sql;
-
-    -- Execute query
-    EXECUTE query;
-
-    -- Clear up
-    DROP PREPARE query;
-
-END IF;
 
 END;;
 DELIMITER ;
