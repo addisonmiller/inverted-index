@@ -10,7 +10,7 @@ DELIMITER ;;
 CREATE PROCEDURE `article__index`(_id INT UNSIGNED)
 
 /*
- * Indexes the requires columns in an element.
+ * Indexes the required columns in an element.
  *
  */
 
