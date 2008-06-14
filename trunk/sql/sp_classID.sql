@@ -13,7 +13,7 @@ CREATE FUNCTION `classID`(_className VARCHAR(255)) RETURNS INT UNSIGNED
 
 /*
  * Returns the search_class_id from the search_class table for a given
- * class name.  It does NOT allocate a new class if missing.
+ * class name.  It allocates a new class if missing.
  */
 
 BEGIN
