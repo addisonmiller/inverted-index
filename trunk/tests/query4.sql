@@ -13,13 +13,13 @@
 
 SELECT a.*
 FROM article a
-     INNER JOIN article__index ai1 ON ai1.article_id = a.article_id
-     INNER JOIN word w1 ON w1.word_id = ai1.word_id
-     INNER JOIN article__index ai2 ON ai2.article_id = a.article_id
-     INNER JOIN word w2 ON w2.word_id = ai2.word_id
+     INNER JOIN search_index i1 ON i1.id = a.article_id
+     INNER JOIN word w1 ON w1.word_id = i1.word_id
+     INNER JOIN search_index i2 ON i2.id = a.article_id
+     INNER JOIN word w2 ON w2.word_id = i2.word_id
 WHERE
      w1.string LIKE 'nine%'
 AND  w2.string LIKE 'centu%'
-AND  ai2.position > ai1.position
-AND  ai2.field = ai1.field
+AND  i2.position > i1.position
+AND  i2.search_class_id = i1.search_class_id
 GROUP BY a.article_id;
