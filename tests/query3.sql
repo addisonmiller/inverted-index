@@ -8,18 +8,18 @@
 
 SELECT a.*
 FROM article a
-     INNER JOIN article__index ai1 ON ai1.article_id = a.article_id
-     INNER JOIN article__index ai2 ON ai2.article_id = a.article_id
-     INNER JOIN article__index ai3 ON ai3.article_id = a.article_id
+     INNER JOIN search_index i1 ON i1.id = a.article_id
+     INNER JOIN search_index i2 ON i2.id = a.article_id
+     INNER JOIN search_index i3 ON i3.id = a.article_id
 WHERE
-     ai1.word_id = wordID(sanitizeWord('bore'), FALSE)
+     i1.word_id = wordID(sanitizeWord('bore'), FALSE)
 
-AND  ai2.word_id = wordID(sanitizeWord('golden'), FALSE)
-AND  ai2.position = ai1.position + 1
-AND  ai2.field = ai1.field
+AND  i2.word_id = wordID(sanitizeWord('golden'), FALSE)
+AND  i2.position = i1.position + 1
+AND  i2.search_class_id = i1.search_class_id
 
-AND  ai3.word_id = wordID(sanitizeWord('apples'), FALSE)
-AND  ai3.position = ai2.position + 1
-AND  ai3.field = ai2.field
+AND  i3.word_id = wordID(sanitizeWord('apples'), FALSE)
+AND  i3.position = i2.position + 1
+AND  i3.search_class_id = i2.search_class_id
 
 GROUP BY a.article_id;

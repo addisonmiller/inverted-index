@@ -8,8 +8,8 @@
 
 SELECT a.*
 FROM article a
-     INNER JOIN article__index ai1 ON ai1.article_id = a.article_id
+     INNER JOIN search_index i1 ON i1.id = a.article_id
 WHERE
-     ai1.word_id = wordID(sanitizeWord('good'), FALSE)
-AND  ai1.field = 'B'
+     i1.word_id = wordID(sanitizeWord('good'), FALSE)
+AND  i1.search_class_id = classID('article._all')
 GROUP BY a.article_id;

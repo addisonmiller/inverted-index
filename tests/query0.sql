@@ -6,4 +6,4 @@
  * This query will search for a set of words
  */
 
-CALL article__basicSearch("the air");
+CALL searchBasic("article._all", "the air");

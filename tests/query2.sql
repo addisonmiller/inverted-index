@@ -8,9 +8,9 @@
 
 SELECT a.*
 FROM article a
-     INNER JOIN article__index ai1 ON ai1.article_id = a.article_id
-     INNER JOIN article__index ai2 ON ai2.article_id = a.article_id
+     INNER JOIN search_index i1 ON i1.id = a.article_id
+     INNER JOIN search_index i2 ON i2.id = a.article_id
 WHERE
-     ai1.word_id = wordID(sanitizeWord('good'), FALSE)
-AND  ai2.word_id = wordID(sanitizeWord('evil'), FALSE)
+     i1.word_id = wordID(sanitizeWord('good'), FALSE)
+AND  i2.word_id = wordID(sanitizeWord('evil'), FALSE)
 GROUP BY a.article_id;
