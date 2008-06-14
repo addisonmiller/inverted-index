@@ -9,7 +9,7 @@
  * MySQL command prompt, do:
  */
 
-\. tests/create_tables.sql
+\. sql/tables.sql
 \. sql/sp_wordID.sql
 \. sql/sp_classID.sql
 \. sql/sp_parseWords.sql
@@ -18,6 +18,7 @@
 \. sql/sp_searchBasic.sql
 \. sql/sp_searchPhrase.sql
 \. sql/triggers.sql
+\. tests/create_tables.sql
 \. tests/data.sql
 
 /*

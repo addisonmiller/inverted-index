@@ -3,9 +3,10 @@
  * Inverted Index Toolkit  <http://code.google.com/p/inverted-index/>
  * Apache License 2.0, blah blah blah.
  *
- * This constructs and executes a simple "AND" query, based on an input
- * string of words.  Rather than including the words themselves in the
- * query, it looks them up in advance.
+ * This constructs and executes a simple "AND" query where the words need
+ * to be monotonically sequential, based on an input string of words.
+ * Rather than including the words themselves in the query, it looks them
+ * up in advance.
  */
 
 DROP PROCEDURE IF EXISTS searchPhrase;
