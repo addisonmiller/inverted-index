@@ -16,6 +16,7 @@
 \. sql/sp_sanitizeWord.sql
 \. sql/sp_indexString.sql
 \. sql/sp_searchBasic.sql
+\. sql/sp_searchPhrase.sql
 \. sql/triggers.sql
 \. tests/data.sql
 
@@ -25,7 +26,7 @@
 
 CALL searchBasic(classID("article._all"), "the air");
 
-CALL searchBasic(classID("article.body"), "best of times");
+CALL searchPhrase(classID("article.body"), "best of times");
 
 /*
  * or run some of the "manual" SQL queries instead:

@@ -1,5 +1,5 @@
 /*
- * searchBasic
+ * searchPhrase
  * Inverted Index Toolkit  <http://code.google.com/p/inverted-index/>
  * Apache License 2.0, blah blah blah.
  *
@@ -8,10 +8,10 @@
  * query, it looks them up in advance.
  */
 
-DROP PROCEDURE IF EXISTS searchBasic;
+DROP PROCEDURE IF EXISTS searchPhrase;
 DELIMITER ;;
 
-CREATE PROCEDURE `searchBasic`(_classId INT UNSIGNED, _sentence TEXT)
+CREATE PROCEDURE `searchPhrase`(_classId INT UNSIGNED, _sentence TEXT)
 thisproc:BEGIN
 
 --
@@ -70,7 +70,8 @@ loop_words: LOOP
                             ' ON i',(_i-1),'.id = i',_i,'.id ');
         SET _wheres = CONCAT(_wheres,
                             ' AND i',_i,'.search_class_id = ',_classId,
-                            ' AND i',_i,'.word_id = ',_wordId);
+                            ' AND i',_i,'.word_id = ',_wordId,
+                            ' AND i',_i,'.position = i',(_i-1),'.position+1');
     ELSE
         SET @_sql = CONCAT(@_sql, ' search_index AS i0 ');
         SET _wheres = CONCAT(' i0.word_id = ',_wordId,
