@@ -11,7 +11,7 @@
 DROP PROCEDURE IF EXISTS searchBasic;
 DELIMITER ;;
 
-CREATE PROCEDURE `searchBasic`(_className VARCHAR(255), _sentence TEXT)
+CREATE PROCEDURE `searchBasic`(_classId INT UNSIGNED, _sentence TEXT)
 thisproc:BEGIN
 
 --
@@ -21,7 +21,6 @@ thisproc:BEGIN
 DECLARE _word VARCHAR(255) DEFAULT NULL;
 DECLARE _wordCount INT UNSIGNED DEFAULT '0';
 DECLARE _wordId INT UNSIGNED;
-DECLARE _classId INT UNSIGNED;
 
 DECLARE _wheres TEXT DEFAULT '';
 
@@ -43,10 +42,7 @@ IF !(_wordCount > 0) THEN
 END IF;
 
 -- Start the query with the data table itself.
-SET @_sql = CONCAT('SELECT i0.id, i0.position, i0.search_class_id FROM ');
-
--- Get the search_class_id for the passed className
-SET _classId = classID(_className);
+SET @_sql = CONCAT('SELECT i0.id, i0.position FROM ');
 
 OPEN cursor_words;
 loop_words: LOOP
