@@ -23,9 +23,9 @@
  * then try out the searching procedures:
  */
 
-CALL searchBasic("article._all", "the air");
+CALL searchBasic(classID("article._all"), "the air");
 
-CALL searchBasic("article.body", "best of times");
+CALL searchBasic(classID("article.body"), "best of times");
 
 /*
  * or run some of the "manual" SQL queries instead:

@@ -6,4 +6,4 @@
  * This query will search for a set of words
  */
 
-CALL searchBasic("article._all", "the air");
+CALL searchBasic(classID("article._all"), "the air");
