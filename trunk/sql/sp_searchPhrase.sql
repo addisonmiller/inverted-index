@@ -61,6 +61,7 @@ loop_words: LOOP
     -- If no word was found, this whole thing's a waste of time
     -- anyway, as no rows will be returned.
     IF (_wordId IS NULL) THEN
+        CLOSE cursor_words;
         LEAVE thisproc;
     END IF;
 

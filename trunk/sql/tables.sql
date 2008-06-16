@@ -25,8 +25,6 @@ CREATE TABLE word (
 CREATE TABLE search_class (
   search_class_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
-  source_table VARCHAR(255) NOT NULL,
-  source_id VARCHAR(255) NOT NULL,
   PRIMARY KEY (search_class_id),
   KEY (name)
 ) ENGINE=InnoDB;

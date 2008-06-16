@@ -26,69 +26,35 @@ BEGIN
 DECLARE _wordCount INT UNSIGNED DEFAULT '0';
 
 -- Found word
-DECLARE _word VARCHAR(255);
+DECLARE _word TEXT;
 
 -- ID for found word
 DECLARE _wordId INT UNSIGNED;
-
--- Character-counting gubbins.
-DECLARE _base INT UNSIGNED DEFAULT '0';
-DECLARE _incr INT UNSIGNED DEFAULT '0';
-DECLARE _len INT UNSIGNED;
-DECLARE _nextChar CHAR(1);
 
 -- First, start off with a clean slate for this article.  Far easier
 -- than trying to update the index for a changed row
 DELETE FROM search_index WHERE id = _id AND search_class_id = _classId;
 
--- Length of input string, for testing end-of-line.
-SET _len = LENGTH(_sentence);
+-- Find the first word in the sentence
+CALL nextWord(_sentence, _word);
 
--- Skip _incr to start of first word
-REPEAT
-    SET _incr = _incr + 1;
-    SET _nextChar = SUBSTRING(_sentence, _incr, 1);
-UNTIL (_nextChar REGEXP '[a-z0-9]' OR _incr > _len) END REPEAT;
+-- Okay.  For each word...
+WHILE (_word IS NOT NULL) DO
 
--- Check to see if there IS a first word
-IF (_incr < _len) THEN
+    -- Get word ID for this word, allocating a new one if necessary
+    SET _wordId = wordID(sanitizeWord(_word), TRUE);
 
-    -- Okay.  For each word...
-    REPEAT
-        -- Start where the first word ended
-        SET _base = _incr;
+    -- Insert index row for this word.
+    INSERT INTO search_index (id, search_class_id, word_id, position)
+                        VALUES (_id, _classId, _wordId, _wordCount);
 
-        -- Rewind one to allow for the first _incr+=1
-        SET _incr = _base-1;
+    -- Update word count
+    SET _wordCount = _wordCount + 1;
 
-        -- Slew through word looking for first non-word character
-        REPEAT
-            SET _incr = _incr + 1;
-            SET _nextChar = SUBSTRING(_sentence, _incr, 1);
-        UNTIL (_nextChar NOT REGEXP '[a-z0-9]' OR _incr > _len) END REPEAT;
+    -- Get the next word
+    CALL nextWord(_sentence, _word);
 
-        -- Grab this word
-        SET _word = SUBSTRING(_sentence, _base, _incr-_base);
-
-        -- Get word ID for this word, allocating a new one if necessary
-        SET _wordId = wordID(sanitizeWord(_word), TRUE);
-
-        -- Insert index row for this word.
-        INSERT INTO search_index (id, search_class_id, word_id, position)
-                            VALUES (_id, _classId, _wordId, _wordCount);
-
-        -- Update word count
-        SET _wordCount = _wordCount + 1;
-
-        -- Slew to find start of next word
-        REPEAT
-            SET _incr = _incr + 1;
-            SET _nextChar = SUBSTRING(_sentence, _incr, 1);
-        UNTIL (_nextChar REGEXP '[a-z0-9]' OR _incr > _len) END REPEAT;
-
-    -- Do this until end of sentence
-    UNTIL _incr>=_len END REPEAT;
-END IF;
+END WHILE;
 
 END;;
 DELIMITER ;
