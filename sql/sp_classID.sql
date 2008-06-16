@@ -19,10 +19,12 @@ CREATE FUNCTION `classID`(_className VARCHAR(255)) RETURNS INT UNSIGNED
 BEGIN
 
 DECLARE _classId INT UNSIGNED DEFAULT 0;
+DECLARE _found BOOLEAN DEFAULT TRUE;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET _found = FALSE;
 
 SELECT search_class_id INTO _classId FROM search_class WHERE name = _className;
 
-IF FOUND_ROWS()>0 THEN
+IF _found THEN
     /* The class was found, so return the ID */
     RETURN _classId;
 ELSE

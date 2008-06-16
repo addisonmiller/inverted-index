@@ -20,11 +20,14 @@ CREATE FUNCTION `wordID`(_word VARCHAR(255), _allocateIfNone BOOLEAN) RETURNS in
 BEGIN
 
 DECLARE _word_id INT UNSIGNED DEFAULT 0;
+DECLARE _found BOOLEAN DEFAULT TRUE;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET _found = FALSE;
 
-/* Find the word in the index, if it's there */
+
+-- Find the word in the index, if it's there
 SELECT word_id INTO _word_id FROM word WHERE string = _word;
 
-IF FOUND_ROWS()>0 THEN
+IF _found THEN
     /* The word was found, so return the ID */
     RETURN _word_id;
 ELSE

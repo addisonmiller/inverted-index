@@ -16,7 +16,7 @@ DECLARE chr           VARCHAR(1);
 -- results. This table can in the future be joined against a set of
 -- conversions (1st=>First) etc.
 
-DROP TABLE IF EXISTS parseWords_result; -- (potentially) dangerous.
+DROP TEMPORARY TABLE IF EXISTS parseWords_result; -- (potentially) dangerous.
 CREATE TEMPORARY TABLE parseWords_result(
        pos int primary key auto_increment,  -- auto inc is used here for automatic
 					    -- word position enumeration
