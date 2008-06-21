@@ -16,5 +16,5 @@ CREATE TABLE IF NOT EXISTS article (
   author text NOT NULL,
   body text NOT NULL,
   PRIMARY KEY  (article_id)
-) ENGINE=InnoDB;
+) ENGINE=MyISAM;
 
