@@ -42,7 +42,7 @@ CREATE TABLE search_index (
 
   PRIMARY KEY (id,search_class_id,position),
   FOREIGN KEY (word_id) REFERENCES word (word_id),
-  FOREIGN KEY (search_class_id) REFERENCES search_class (search_class_id),
+  FOREIGN KEY (search_class_id) REFERENCES search_class (search_class_id)
 ) ENGINE=MyISAM;
 
 /*
