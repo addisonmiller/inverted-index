@@ -10,6 +10,6 @@ SELECT a.*
 FROM article a
      INNER JOIN search_index i1 ON i1.id = a.article_id
 WHERE
-     i1.word_id = wordID(sanitizeWord('good'), FALSE)
+     i1.word_id = wordID(sanitizeWord('good'))
 AND  i1.search_class_id = classID('article')
 GROUP BY a.article_id;

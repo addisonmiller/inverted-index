@@ -14,9 +14,9 @@ INNER JOIN word AS wC         ON wC.word_id = iC.word_id
 WHERE
     iP.position = iB.position - 1
 AND iC.position = iB.position + 1
-AND iC.search_class_id = classID('bibleverse._all')
-AND iB.search_class_id = classID('bibleverse._all')
-AND iP.search_class_id = classID('bibleverse._all')
-AND iB.word_id IN (wordID(sanitizeWord('begat'), FALSE),
-                   wordID(sanitizeWord('beget'), FALSE))
+AND iC.search_class_id = classID('bibleverse')
+AND iB.search_class_id = classID('bibleverse')
+AND iP.search_class_id = classID('bibleverse')
+AND iB.word_id IN (wordID(sanitizeWord('begat')),
+                   wordID(sanitizeWord('beget')))
 ORDER BY parent;

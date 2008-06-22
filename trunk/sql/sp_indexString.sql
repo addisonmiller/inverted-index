@@ -24,7 +24,7 @@ BEGIN
 DECLARE _i INT UNSIGNED DEFAULT '0';
 
 -- Found word
-DECLARE _word TEXT;
+DECLARE _word VARCHAR(128);
 
 -- ID for found word
 DECLARE _wordId INT UNSIGNED;
@@ -40,7 +40,7 @@ CALL nextWord(_sentence, _word);
 WHILE (_word IS NOT NULL) DO
 
     -- Get word ID for this word, allocating a new one if necessary
-    SET _wordId = wordID(sanitizeWord(_word), TRUE);
+    SET _wordId = wordID_withNew(sanitizeWord(_word));
 
     -- Insert index row for this word.
     INSERT INTO search_index (id, search_class_id, word_id, position)

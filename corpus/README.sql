@@ -16,16 +16,25 @@
  * MySQL command prompt, do:
  */
 
+SELECT 'Setup...' AS Status;
 \. setup.sql
+
+SELECT 'Indexing "War and Peace"...' AS Status;
 \. war_and_peace.sql
+
+SELECT 'Indexing "Moby Dick"...' AS Status;
 \. moby_dick.sql
+
+SELECT 'Indexing "Bible as Documents"...' AS Status;
 \. bibledoc.sql
+
+SELECT 'Indexing "Bible as Verses"...' AS Status;
 \. bibleverse.sql
 
 -- ----------------------------------------------------------------------
 -- and then you can try:
 -- ----------------------------------------------------------------------
-CALL search(classID('doc.body'), 'good and evil', 'phrase', 'doc', NULL, NULL);
+CALL searchPhrase(classID('doc.body'), 'good and evil');
 
 -- ----------------------------------------------------------------------
 -- The included "query_begat.sql" demonstrates how you can use the data in

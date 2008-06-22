@@ -11,9 +11,16 @@ CREATE TABLE IF NOT EXISTS doc (
   subtitle text NOT NULL,
   body text NOT NULL,
   PRIMARY KEY  (doc_id)
-) ENGINE=MyISAM;
+);
 
 DELIMITER ;;
+
+REPLACE INTO search_class (name, data_table, primary_key, columns) VALUES
+    ('doc',        'doc', 'doc_id', 'title,subtitle,author,body'),
+    ('doc.title',  'doc', 'doc_id', 'title'),
+    ('doc.titles', 'doc', 'doc_id', 'title,subtitle'),
+    ('doc.author', 'doc', 'doc_id', 'author'),
+    ('doc.body',   'doc', 'doc_id', 'body');
 
 DROP TRIGGER IF EXISTS tr_AU_index_doc;;
 CREATE TRIGGER tr_AU_index_doc
@@ -64,9 +71,12 @@ CREATE TABLE IF NOT EXISTS bibleverse (
   verse tinyint NOT NULL,
   body text NOT NULL,
   PRIMARY KEY  (bibleverse_id)
-) ENGINE=MyISAM;
+);
 
 DELIMITER ;;
+
+REPLACE INTO search_class (name, data_table, primary_key, columns) VALUES
+    ('bibleverse', 'bibleverse', 'bibleverse_id', 'body');
 
 DROP TRIGGER IF EXISTS tr_AU_index_bibleverse;;
 CREATE TRIGGER tr_AU_index_bibleverse

@@ -6,11 +6,17 @@
 
 DELIMITER ;;
 
+REPLACE INTO search_class (name, data_table, primary_key, columns) VALUES
+    ('article',        'article', 'article_id', 'title,author,body'),
+    ('article.title',  'article', 'article_id', 'title'),
+    ('article.author', 'article', 'article_id', 'author'),
+    ('article.body',   'article', 'article_id', 'body');
+
 DROP TRIGGER IF EXISTS tr_AU_index_article;;
 CREATE TRIGGER tr_AU_index_article
     AFTER UPDATE ON article
     FOR EACH ROW BEGIN
-        CALL indexString(NEW.article_id, CONCAT_WS(' ', NEW.title, NEW.author, NEW.body), classID('article'));
+        CALL indexString(NEW.article_id, CONCAT_WS(' ',NEW.title,NEW.author,NEW.body), classID('article'));
         CALL indexString(NEW.article_id, NEW.title, classID('article.title'));
         CALL indexString(NEW.article_id, NEW.author, classID('article.author'));
         CALL indexString(NEW.article_id, NEW.body, classID('article.body'));
@@ -21,7 +27,7 @@ DROP TRIGGER IF EXISTS tr_AI_index_article;;
 CREATE TRIGGER tr_AI_index_article
     AFTER INSERT ON article
     FOR EACH ROW BEGIN
-        CALL indexString(NEW.article_id, CONCAT_WS(' ', NEW.title, NEW.author, NEW.body), classID('article'));
+        CALL indexString(NEW.article_id, CONCAT_WS(' ',NEW.title,NEW.author,NEW.body), classID('article'));
         CALL indexString(NEW.article_id, NEW.title, classID('article.title'));
         CALL indexString(NEW.article_id, NEW.author, classID('article.author'));
         CALL indexString(NEW.article_id, NEW.body, classID('article.body'));

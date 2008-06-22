@@ -17,6 +17,7 @@
 
 \. sql/tables.sql
 \. sql/sp_wordID.sql
+\. sql/sp_wordID_withNew.sql
 \. sql/sp_classID.sql
 \. sql/sp_nextWord.sql
 \. sql/sp_parseWords.sql
@@ -42,11 +43,14 @@ CALL searchBasic(classID('article'), 'night time');
 CALL searchPhrase(classID('article.body'), 'best of times');
 
 -- -----------------------------------------------------------------------
--- If you want the content too, then use the main 'search' procedure
--- directly:
+-- If you want to control the content output, then use the main 'search'
+-- procedure directly:
 -- -----------------------------------------------------------------------
 CALL search(classID('article.body'), 'best of times', 'phrase',
                     'article', 'article_id', 'title,body');
+
+CALL search(classID('article.body'), 'best of times', 'phrase',
+                    NULL, NULL, NULL);
 
 -- -----------------------------------------------------------------------
 -- or run some of the "manual" SQL queries instead:
