@@ -56,11 +56,11 @@ CREATE TABLE search_index (
  */
 
 CREATE INDEX wcp ON search_index (word_id, search_class_id, position);
+CREATE INDEX iwc ON search_index (id, word_id, search_class_id);
+-- CREATE INDEX icw ON search_index (id, search_class_id, word_id);
 -- CREATE INDEX cwp ON search_index (search_class_id, word_id, position);
 -- CREATE INDEX cpw ON search_index (search_class_id, position, word_id);
 -- CREATE INDEX cip ON search_index (search_class_id, id, position);
 -- CREATE INDEX cpi ON search_index (search_class_id, position, id);
--- CREATE INDEX iwc ON search_index (id, word_id, search_class_id);
--- CREATE INDEX icw ON search_index (id, search_class_id, word_id);
 -- CREATE INDEX pci ON search_index (position, search_class_id, id);
 -- CREATE INDEX pic ON search_index (position, id, search_class_id);

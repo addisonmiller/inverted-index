@@ -20,10 +20,8 @@ CREATE PROCEDURE `indexString`(_id INT UNSIGNED, _sentence TEXT, _classId INT UN
 
 BEGIN
 
--- -- Internal variables
-
--- Current word count
-DECLARE _wordCount INT UNSIGNED DEFAULT '0';
+-- Iterator counter for word loop
+DECLARE _i INT UNSIGNED DEFAULT '0';
 
 -- Found word
 DECLARE _word TEXT;
@@ -46,10 +44,10 @@ WHILE (_word IS NOT NULL) DO
 
     -- Insert index row for this word.
     INSERT INTO search_index (id, search_class_id, word_id, position)
-                        VALUES (_id, _classId, _wordId, _wordCount);
+                        VALUES (_id, _classId, _wordId, _i);
 
     -- Update word count
-    SET _wordCount = _wordCount + 1;
+    SET _i = _i + 1;
 
     -- Get the next word
     CALL nextWord(_sentence, _word);
