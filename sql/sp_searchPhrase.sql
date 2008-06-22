@@ -32,7 +32,22 @@ DELIMITER ;;
 CREATE PROCEDURE `searchPhrase`(_classId INT UNSIGNED, _sentence TEXT)
 thisproc:BEGIN
 
-CALL search(_classId, _sentence, 'phrase', NULL, NULL, NULL);
+DECLARE _dataTable VARCHAR(64);
+DECLARE _primaryKey VARCHAR(64);
+
+-- Retrieve data table from search_class table, so we know what to display.
+SELECT data_table, primary_key
+    INTO _dataTable, _primaryKey
+    FROM search_class
+    WHERE search_class_id = _classId;
+
+IF _dataTable IS NULL THEN
+    -- The search_class wasn't found, or the _dataTable was NULL (impossible?)
+    SELECT CONCAT('Search class ',_classId,' not found or incomplete.') AS Error;
+    LEAVE thisproc;
+END IF;
+
+CALL search(_classId, _sentence, 'phrase', _dataTable, _primaryKey, 'd.*');
 
 END;;
 DELIMITER ;

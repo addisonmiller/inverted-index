@@ -14,20 +14,23 @@ DROP TABLE IF EXISTS word;
  */
 CREATE TABLE word (
   word_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  string VARCHAR(255) NOT NULL,
+  string VARCHAR(128) NOT NULL,
   PRIMARY KEY (word_id),
   UNIQUE KEY (string)
-) ENGINE=MyISAM;
+);
 
 /*
  * This table contains a list of search classes.
  */
 CREATE TABLE search_class (
   search_class_id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL,
+  name VARCHAR(64) NOT NULL,
+  data_table VARCHAR(64) NOT NULL,
+  primary_key VARCHAR(64) NOT NULL,
+  columns VARCHAR(255),
   PRIMARY KEY (search_class_id),
   KEY (name)
-) ENGINE=MyISAM;
+);
 
 /*
  * This table contains the search index.  It's difficult to guess what
@@ -43,7 +46,7 @@ CREATE TABLE search_index (
   PRIMARY KEY (id,search_class_id,position),
   FOREIGN KEY (word_id) REFERENCES word (word_id),
   FOREIGN KEY (search_class_id) REFERENCES search_class (search_class_id)
-) ENGINE=MyISAM;
+);
 
 /*
  * More indexes slows down index creation (and update) time significantly,
@@ -57,10 +60,12 @@ CREATE TABLE search_index (
 
 CREATE INDEX wcp ON search_index (word_id, search_class_id, position);
 CREATE INDEX iwc ON search_index (id, word_id, search_class_id);
--- CREATE INDEX icw ON search_index (id, search_class_id, word_id);
--- CREATE INDEX cwp ON search_index (search_class_id, word_id, position);
--- CREATE INDEX cpw ON search_index (search_class_id, position, word_id);
--- CREATE INDEX cip ON search_index (search_class_id, id, position);
--- CREATE INDEX cpi ON search_index (search_class_id, position, id);
--- CREATE INDEX pci ON search_index (position, search_class_id, id);
--- CREATE INDEX pic ON search_index (position, id, search_class_id);
+CREATE INDEX icw ON search_index (id, search_class_id, word_id);
+/*
+CREATE INDEX cwp ON search_index (search_class_id, word_id, position);
+CREATE INDEX cpw ON search_index (search_class_id, position, word_id);
+CREATE INDEX cip ON search_index (search_class_id, id, position);
+CREATE INDEX cpi ON search_index (search_class_id, position, id);
+CREATE INDEX pci ON search_index (position, search_class_id, id);
+CREATE INDEX pic ON search_index (position, id, search_class_id);
+*/

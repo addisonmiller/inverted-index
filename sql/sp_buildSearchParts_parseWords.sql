@@ -26,7 +26,7 @@ thisproc:BEGIN
 --
 -- Internal Variables
 --
-DECLARE _word VARCHAR(255) DEFAULT NULL;
+DECLARE _word VARCHAR(128) DEFAULT NULL;
 DECLARE _wordCount INT UNSIGNED DEFAULT '0';
 DECLARE _wordId INT UNSIGNED;
 
@@ -58,7 +58,7 @@ loop_words: LOOP
     END IF;
 
     -- Get the ID for this word
-    SET _wordId = wordID(_word, FALSE);
+    SET _wordId = wordID(_word);
 
     -- If no word was found, this whole thing's a waste of time
     -- anyway, as no rows will be returned.

@@ -52,7 +52,7 @@ CALL nextWord(_sentence, _word);
 WHILE (_word IS NOT NULL) DO
 
     -- Get the ID for this word
-    SET _wordId = wordID(sanitizeWord(_word), FALSE);
+    SET _wordId = wordID(sanitizeWord(_word));
 
     -- If no word was found, this whole thing's a waste of time
     -- anyway, as no rows will be returned.
