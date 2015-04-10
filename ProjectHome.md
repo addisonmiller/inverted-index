@@ -1,0 +1,3 @@
+This project aims to create a toolkit providing DBAs and programmers with a simple way of querying and updating an inverted index, initially supporting MySQL 5.  The index is stored as wordlist tables in the database itself, and thus requires no additional software for searching and index creation.
+
+This is, in effect, an alternative to MySQL's FULLTEXT mechanism, or the dreaded "WHERE word LIKE '%foo%'" construction.  While it doesn't offer the power of a dedicated search library, it is simple and self-contained.
